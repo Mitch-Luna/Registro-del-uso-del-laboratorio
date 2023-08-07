@@ -1,1 +1,1 @@
-export { LaboratoryUseDto } from './uso-lab.dto'
+export { LaboratoryUseDto } from './use-lab.dto'

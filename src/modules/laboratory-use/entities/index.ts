@@ -1,1 +1,1 @@
-export { LaboratoryUse } from './uso-lab.entity';
+export { LaboratoryUse } from './use-lab.entity';

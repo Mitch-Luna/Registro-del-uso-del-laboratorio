@@ -2,7 +2,7 @@
 import { Entity, PrimaryGeneratedColumn, Column} from 'typeorm';
 
 
-@Entity({ name: 'uso_lab' })
+@Entity({ name: 'use_lab' })
 export class LaboratoryUse {
     @PrimaryGeneratedColumn({ name: 'id', type: 'int4' })
     id?: number;
