@@ -1,13 +1,11 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
-  IsBoolean,
   IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 
 export class LaboratoryUseDto {
@@ -29,7 +27,7 @@ export class LaboratoryUseDto {
   readonly academyArea: string;
 
   @IsString()
-  @MinLength(50)
+  @MaxLength(50)
   @IsNotEmpty()
   @ApiProperty()
   readonly career: string;
@@ -43,7 +41,7 @@ export class LaboratoryUseDto {
   @IsDate()
   @IsNotEmpty()
   @ApiProperty()
-  readonly date: string;
+  readonly date: Date;
 
   @IsString()
   @IsNotEmpty()
@@ -58,10 +56,9 @@ export class LaboratoryUseDto {
   readonly shift: string;
 
   @IsNumber()
-  @IsOptional()
-  @MaxLength(10)
+  @IsNotEmpty()
   @ApiProperty()
-  readonly year: number;
+  readonly year?: number;
 
   @IsString()
   @IsNotEmpty()
@@ -71,32 +68,24 @@ export class LaboratoryUseDto {
 
   @IsNumber()
   @IsNotEmpty()
-  @MaxLength(50)
   @ApiProperty()
   readonly female: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @MaxLength(50)
   @ApiProperty()
   readonly male: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @MaxLength(20)
   @ApiProperty()
   readonly total: number;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  @MaxLength(20)
   @ApiProperty()
   readonly hours: string;
 
-  @IsBoolean()
-  @IsOptional()
-  @ApiProperty()
-  readonly isActive: boolean;
 }
 
-export class UserPartialTypeDto extends PartialType(LaboratoryUseDto) {}
+export class UseLabTypeDto extends PartialType(LaboratoryUseDto) { }

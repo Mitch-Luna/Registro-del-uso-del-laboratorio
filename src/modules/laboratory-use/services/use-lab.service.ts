@@ -1,83 +1,43 @@
-import {
-    Injectable,
-    InternalServerErrorException,
-    NotFoundException,
-  } from '@nestjs/common';
-  import { InjectRepository } from '@nestjs/typeorm';
-  import * as bcrypt from 'bcrypt';
-  import { UsersDto, UserPartialTypeDto } from '../dtos';
-  import { Repository } from 'typeorm';
-  import { User } from '../entities';
-  
-  @Injectable()
-  export class UsoLabService {
-    users: any[] = [];
-  
-    // Inyectamos el servicio de users
-    constructor(
-      @InjectRepository(User)
-      private readonly userRepository: Repository<User>,
-    ) {}
-  
-    countItems() {
-      return this.users.length;
-    }
-  
-    async findByEmail(email: string) {
-      const user = await this.userRepository.findOne({
-        where: { email },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          password: true,
-        },
-      });
-  
-      if (!user) {
-        throw new NotFoundException('No se encontro el usuario');
-      }
-  
-      return user;
-    }
-  
-    async created(payload: UsersDto) {
-      try {
-        let { password } = payload;
-  
-        password = await bcrypt.hash(password, SetupEnum.SALTORROUND);
-  
-        const newUser = this.userRepository.create({ ...payload, password });
-        return await this.userRepository.save(newUser);
-      } catch (error) {
-        throw new InternalServerErrorException(error);
-      }
-    }
-  
-    async getUsers() {
-      const users = await this.userRepository.find();
-      return users;
-    }
-  
-    async getUser(id: number) {
-      const user = await this.userRepository.findOne({ where: { id: id } });
-      return user;
-    }
-  
-    async updated(id: number, payload: UserPartialTypeDto) {
-      const oldUser = await this.userRepository.findOne({ where: { id: id } });
-      if (!oldUser) {
-        throw new NotFoundException('No se encontro el usuario');
-      }
-  
-      const merged = this.userRepository.merge(oldUser, payload);
-      return await this.userRepository.save(merged);
-    }
-  
-    deleted(id: number) {
-      const index = this.users.findIndex((user) => user.id === id);
-      this.users.splice(index, 1);
-      return 'Usuario eliminado con éxito';
-    }
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { LaboratoryUse } from "../entities";
+
+@Injectable()
+export class UseLabService {
+  constructor(
+    @InjectRepository(LaboratoryUse)
+    private readonly registerRepository: Repository<LaboratoryUse>
+  ) { }
+
+  async create(LaboratoryUseDto) {
+    const registerDetail = this.registerRepository.create(LaboratoryUseDto);
+    await this.registerRepository.save(registerDetail);
+
+    return registerDetail;
   }
-  
+
+  findAll() {
+    return this.registerRepository.find();
+  }
+
+  findOne(id: any) {
+    return this.registerRepository.findOneBy({ id });
+  }
+
+  async remove(id: number) {
+    const orderDetail = await this.findOne(id);
+    await this.registerRepository.remove(orderDetail);
+    return 'El registro se ha eliminado'
+  }
+
+  async update(id: number, LaboratoryUseDto) {
+    const findRegister = await this.findOne(id);
+    const updatedRegister = await this.registerRepository.merge(
+      findRegister,
+      LaboratoryUseDto,
+    );
+
+    return this.registerRepository.save(updatedRegister);
+  }
+}

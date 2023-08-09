@@ -1,54 +1,39 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    ParseIntPipe,
-    Post,
-    Put,
-    UseGuards,
-  } from '@nestjs/common';
-  import { UsoLabService } from '../services/use-lab.service';
-  import { LaboratoryUseDto } from '../dto/use_lab.dto';
-  import { LaboratoryUse } from '../entities';
-  
-  @Controller('users')
-  
-  export class UseLabController {
-    constructor(private readonly usersServices: UsoLabService) { }
-  
-    @Get('/')
-    async getUsers() {
-      const users = await this.usersServices.getUsers();
-      const data = {
-        data: users,
-        message: 'ok',
-      };
-      return data;
-    }
-  
-    @Post('/')
-    async createUser(@Body() payload: LaboratoryUseDto) {
-      return await this.usersServices.created(payload);
-    }
-  
-    @Get('/:id')
-    async getUser(@Param('id', ParseIntPipe) id: number, @GetUser() user: LaboratoryUse) {
-      return await this.usersServices.getUser(id);
-    }
-  
-    @Put('/:id')
-    async updatedUser(
-      @Param('id', ParseIntPipe) id: number,
-      @Body() payload: UserPartialTypeDto,
-    ) {
-      return await this.usersServices.updated(id, payload);
-    }
-  
-    @Delete('/:id')
-    async deleteUser(@Param('id', ParseIntPipe) id: number) {
-      return await this.usersServices.deleted(id);
-    }
+import { Body, Controller, Get, Post, Patch, ParseUUIDPipe, ParseIntPipe } from "@nestjs/common";
+import { Delete, Param } from "@nestjs/common/decorators";
+import { LaboratoryUseDto } from "../dto";
+import { UseLabService } from "../services/use-lab.service";
+
+@Controller('uselab')
+export class UseLabController {
+  constructor(
+    private readonly registerDetailServiceRepo: UseLabService
+  ) { }
+  @Post()
+  create(@Body() orderDto: LaboratoryUseDto) {
+    return this.registerDetailServiceRepo.create(orderDto);
   }
-  
+
+  @Get()
+  findAll() {
+    return this.registerDetailServiceRepo.findAll();
+  }
+
+  @Get(':id')
+  findOne(
+    @Param('id', ParseIntPipe) id: number) {
+    return this.registerDetailServiceRepo.findOne(id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.registerDetailServiceRepo.remove(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateRegisterDetailDto: LaboratoryUseDto
+  ) {
+    return this.registerDetailServiceRepo.update(id, updateRegisterDetailDto);
+  }
+}

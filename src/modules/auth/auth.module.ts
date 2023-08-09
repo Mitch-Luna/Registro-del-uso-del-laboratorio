@@ -16,11 +16,15 @@ import {
   UsersController,
   AsignarRolesController,
 } from './controllers';
-import { User, Role } from './entities';
+import { User, Role, } from './entities';
+import { UseLabController } from '../laboratory-use/controller/use-lab.controller';
+import { UseLabService } from '../laboratory-use/services/use-lab.service';
+import { LaboratoryUse } from '../laboratory-use/entities';
+
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role]),
+    TypeOrmModule.forFeature([User, Role, LaboratoryUse]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -29,7 +33,7 @@ import { User, Role } from './entities';
         return {
           secret: configService.get('JWT_SECRET'),
           signOptions: {
-            expiresIn: '2h',
+            expiresIn: '24h',
           },
         };
       },
@@ -40,6 +44,7 @@ import { User, Role } from './entities';
     RolesController,
     UsersController,
     AsignarRolesController,
+    UseLabController
   ],
   providers: [
     AuthService,
@@ -47,7 +52,8 @@ import { User, Role } from './entities';
     JwtStrategy,
     RolesService,
     AsignarRolesService,
+    UseLabService
   ],
   exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })
-export class AuthModule {}
+export class AuthModule { }
